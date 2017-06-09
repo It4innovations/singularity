@@ -124,6 +124,27 @@ char *singularity_registry_get(char *key) {
     return(strdup(found->data));
 }
 
+int singularity_registry_get_bool(char *key) {
+    char* config_value; 
+
+    if ( ( config_value = singularity_registry_get(key) ) != NULL ) {
+        if ( strcmp(config_value, "yes") == 0 ||
+                strcmp(config_value, "y") == 0 ||
+                strcmp(config_value, "1") == 0 ) {
+            singularity_message(DEBUG, "Return singularity_registry_get_bool(%s) = 1\n", key);
+            return(1);
+        } else if ( strcmp(config_value, "no") == 0 ||
+                strcmp(config_value, "n") == 0 ||
+                strcmp(config_value, "0") == 0 ) {
+            singularity_message(DEBUG, "Return singularity_registry_get_bool(%s) = 0\n", key);
+            return(0);
+        } else {
+            singularity_message(ERROR, "Unsupported value for registry boolean key '%s' = '%s'\n", key, config_value);
+        }
+    }
+
+    return(-1);
+}
 
 int singularity_registry_set(char *key, char *value) {
     ENTRY *prev;
